@@ -8,7 +8,10 @@
  
  * //creep is the variable passed from the main module where creep == Game.creeps['CreepName']
  */
+//require a module
+var roleUpgrader = require('role.upgrader');
 
+//define the role
 var roleBuilder = {
     run: function(creep){
         var stored_energy = creep.store[RESOURCE_ENERGY];
@@ -41,16 +44,24 @@ var roleBuilder = {
              }
         }//end if loop for energy flag lowered
         
+
+        //switch statement here is probably not appropriate. Maybe move to a function instead. This block has the creep build, or if no construction sites exist, act as an upgrader
         if(creep.memory.energy_flag ==1){
-            if(target) {
-                if(creep.build(target) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#aaaaaa'}});
-                    creep.say('building');
-                }
-                else{
+            switch(target){
+                case null:
+                    roleUpgrader.run(creep);
+                    //creep.moveTo(Game.flags.Flag1, {visualizePathStyle: {stroke: '#bbbbbb'}});
+                    break;
+                default:
                     creep.say('Build');
-                }
-            }
+                    if(creep.build(target) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target, {visualizePathStyle: {stroke: '#aaaaaa'}});
+                        creep.say('B-move');
+                        //console.log(target); //debug statement
+                    }
+                    break;
+            }//end switch statement 
+
         }//end if loop for energy flag raised 
 
     } //end function loop
